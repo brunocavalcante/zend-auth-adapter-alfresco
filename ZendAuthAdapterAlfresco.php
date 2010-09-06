@@ -13,10 +13,9 @@
  */
 class ZendAuthAdapterAlfresco implements Zend_Auth_Adapter_Interface
 {
-    const WSDL_ADDRESS = 'localhost:8080/alfresco/wsdl/authentication-service.wsdl';
-    
     protected $_username;
     protected $_password;
+    protected $_wsdlAddress;
     protected $_response;
     protected $_result;
     
@@ -25,10 +24,11 @@ class ZendAuthAdapterAlfresco implements Zend_Auth_Adapter_Interface
      *
      * @return void
      */
-    public function __construct($username, $password)
+    public function __construct($username, $password, $wsdlAddress)
     {
         $this->setUsername($username);
         $this->setPassword($password);
+        $this->setWsdlAddress($wsdlAddress);
         $this->setDefaultResult();
     }
     
@@ -55,6 +55,16 @@ class ZendAuthAdapterAlfresco implements Zend_Auth_Adapter_Interface
     private function setPassword($password)
     {
         $this->_password = $password;
+    }
+    
+    private function getWsdlAddress()
+    {
+        return $this->_wsdlAddress;
+    }
+    
+    private function setWsdlAddress($wsdlAddress)
+    {
+        $this->_wsdlAddress = $wsdlAddress;
     }
     
     private function getResponse()
@@ -130,7 +140,7 @@ class ZendAuthAdapterAlfresco implements Zend_Auth_Adapter_Interface
     
     private function getSoapClient()
     {
-        $soap_client = new Zend_Soap_Client(self::WSDL_ADDRESS);
+        $soap_client = new Zend_Soap_Client($this->getWsdlAddress());
         return $soap_client;
     }
     
